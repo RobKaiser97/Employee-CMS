@@ -9,7 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "inquirer": "^8.2.4",
     "mysql2": "^3.6.1"
+  },
+  "devDependencies": {
+    "prettier": "3.0.3"
   }
 }
