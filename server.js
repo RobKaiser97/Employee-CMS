@@ -80,7 +80,7 @@ const mainMenu = () => {
     });
 };
 
-viewEmployees = () => {
+const viewEmployees = () => {
   sql = `SELECT * FROM employee`;
   db.query(sql, (err, rows) => {
     if (err) {
@@ -91,7 +91,7 @@ viewEmployees = () => {
   });
 };
 
-viewDepartments = () => {
+const viewDepartments = () => {
   sql = `SELECT * FROM department`;
   db.query(sql, (err, rows) => {
     if (err) {
@@ -102,7 +102,7 @@ viewDepartments = () => {
   });
 };
 
-viewRoles = () => {
+const viewRoles = () => {
   sql = `SELECT * FROM role`;
   db.query(sql, (err, rows) => {
     if (err) {
@@ -113,7 +113,41 @@ viewRoles = () => {
   });
 };
 
-addEmployee = () => {
+const addEmployee = () => {
+  let getMan =
+  `SELECT manager_id, first_name, last_name FROM employee WHERE manager_id IS NOT NULL;`;
+  let getRole =
+  `SELECT id, title FROM role;`;
+
+  // db query to get all managers and map them into a variable to pass to the inquirer prompt
+  const getManPromise = new Promise((resolve, reject) => {
+  db.query(getMan, (err, rows) => {
+    if (err) {
+      reject(err);
+    }
+    resolve(rows.map(({ manager_id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      id: `${manager_id}`
+    })));
+  });
+  });
+  // db query to get all roles and map them into a variable to pass to the inquirer prompt
+  const getRolePromise = new Promise((resolve, reject) => {
+  db.query(getRole, (err, rows) => {
+    if (err) {
+      reject(err);
+    }
+    resolve(rows.map(({ id, title }) => ({
+      name: `${title}`,
+      id: `${id}`
+    })));
+  });
+  });
+// Use Promise.all to wait for all promises to resolve
+// Use Promise.all to wait for all promises to resolve
+Promise.all([getManPromise, getRolePromise])
+.then(([managerChoices, roleChoices]) => {
+  // Run the Inquirer prompt after the database queries have completed
   inquirer
     .prompt([
       {
@@ -127,36 +161,28 @@ addEmployee = () => {
         message: "What is the employee's last name?",
       },
       {
-        type: "option",
+        type: "list",
         name: "role_id",
         message: "What is the employee's role?",
-        choices: [
-          "Sales Lead",
-          "Salesperson",
-          "Lead Engineer",
-          "Software Engineer",
-          "Account Manager",
-          "Accountant",
-          "Legal Team Lead",
-          "Lawyer",
-        ],
+        choices: roleChoices,
       },
       {
-        type: "validate",
+        type: "list",
         name: "manager_id",
-        message: "Does the employee have a manager?",
-        choices: ["Yes", "No"],
+        message: "Who is the employee's manager?",
+        choices: [...managerChoices, "None"],
       },
     ])
     .then((response) => {
-      sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+      let sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+      let manager_id = response.manager_id === "None" ? null : response.manager_id;
       db.query(
         sql,
         [
           response.first_name,
           response.last_name,
           response.role_id,
-          response.manager_id,
+          manager_id,
         ],
         (err, rows) => {
           if (err) {
@@ -167,9 +193,11 @@ addEmployee = () => {
         }
       );
     });
+})
+.catch(err => console.log(err));
 };
 
-addRole = () => {
+const addRole = () => {
   // db query to get all employees to pass to the inquirer prompt
   db.query(`SELECT * FROM employees`, (err, rows) => {
     if (err) {
@@ -222,7 +250,7 @@ addRole = () => {
     });
 };
 
-updateRole = () => {
+const updateRole = () => {
   // db query to get all employees to pass to the inquirer prompt
   db.query(`SELECT * FROM employees`, (err, rows) => {
     if (err) {
@@ -275,7 +303,7 @@ updateRole = () => {
     });
 };
 
-removeEmployee = () => {
+const removeEmployee = () => {
   // db query to get all employees to pass to the inquirer prompt
   db.query(`SELECT * FROM employees`, (err, rows) => {
     if (err) {
@@ -308,7 +336,7 @@ removeEmployee = () => {
     });
 };
 
-removeDepartment = () => {
+const removeDepartment = () => {
   // db query to get all departments to pass to the inquirer prompt
   db.query(`SELECT * FROM departments`, (err, rows) => {
     if (err) {
@@ -341,7 +369,7 @@ removeDepartment = () => {
     });
 };
 
-removeRole = () => {
+const removeRole = () => {
   // db query to get all roles to pass to the inquirer prompt
   db.query(`SELECT * FROM role`, (err, rows) => {
     if (err) {
@@ -373,4 +401,3 @@ removeRole = () => {
       });
     });
 };
-
