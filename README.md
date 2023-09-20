@@ -78,7 +78,7 @@ SOURCE seeds.sql;
 
 ## Usage
 
-Click the movie [🎬](https://mylink) to view a demonstration of the application!
+Click the movie [🎬](https://drive.google.com/file/d/1O9zcQ5C5Dd6a6eyiqgllSI1N9hz-ZNF_/view) to view a demonstration of the application!
 
 ## License
 
