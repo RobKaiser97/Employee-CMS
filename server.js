@@ -249,7 +249,7 @@ const addRole = () => {
          {
            type: "input",
            name: "salary",
-           message: "How much does this roles salary?",
+           message: "What is this roles salary?",
          },
          {
            type: "list",
