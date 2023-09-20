@@ -348,7 +348,7 @@ const removeEmployee = () => {
     }
     const employeeChoices = employees.map((employee) => ({
       name: employee.employee_name,
-      id: employee.id,
+      value: employee.id,
     }));
 
     // pass the employeeChoices array to the inquirer prompt to allow user to select an employee to update
@@ -382,7 +382,7 @@ const removeDepartment = () => {
     }
     const departmentChoices = departments.map((department) => ({
       name: department.name,
-      id: department.id,
+      value: department.id,
     }));
 
     // pass the departmentChoices array to the inquirer prompt to allow user to select a department to remove
@@ -416,7 +416,7 @@ const removeRole = () => {
     }
     const roleChoices = roles.map((role) => ({
       name: role.title,
-      id: role.id,
+      value: role.id,
     }));
 
     // pass the roleChoices array to the inquirer prompt to allow user to select a role to remove
